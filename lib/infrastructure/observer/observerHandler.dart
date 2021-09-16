@@ -41,7 +41,7 @@ class ObserverHandler{
     }
     addTempObserver(Instrument instrument){
         if(isTempObserverRunning){
-            notify('movingAverageAgain','again');
+            notify('moving average again tried adding',instrument.toString());
             return;
         }
         observers[instrument.token] = TempObserver(instrument,notify,removeTempObserver);

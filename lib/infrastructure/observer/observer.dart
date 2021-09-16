@@ -28,24 +28,25 @@ class Observer{
             if(latestCandle.dateTime == dateTime){
                 latestCandle = latestCandle.updatedCandle(ltp);
             }else{
-                checkEntry(ltp);
                 print(latestCandle);
+                candles.add(latestCandle);
                 latestCandle = Candle.justFormed(dateTime,ltp,candles.last.EMA);
+                checkEntry(ltp);
             }
         }else{
             observerSync!.ltpChanged(ltp,dateTime,isCandleChanged);
         }
     }
-    checkMovingAverage(){
-        var candleHeight = latestCandle.h - latestCandle.l;
-        var upperLimit = latestCandle.l + (candleHeight/3);
-        return upperLimit > latestCandle.EMA;
+    checkMovingAverage(Candle c){
+        var candleHeight = c.h - c.l;
+        var upperLimit = c.l + (candleHeight/3);
+        return upperLimit > c.EMA;
     }
     checkEntry(double ltp){
         if(isInMovingAverage){
-            if(!checkMovingAverage()) isInMovingAverage = false;
+            if(!checkMovingAverage(candles.last)) isInMovingAverage = false;
         }else{
-            if(checkMovingAverage()){
+            if(checkMovingAverage(candles.last)){
                 addOptionObserver(ltp);
                 isInMovingAverage = true;
             }
