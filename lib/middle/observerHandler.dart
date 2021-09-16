@@ -1,17 +1,17 @@
-import 'observer.dart';
-import '../../ui/notifier.dart';
-import '../../injector.dart';
-import '../endPoint/endPointHandler.dart';
-import 'tempObserver.dart';
-import '../../domain/instrument.dart';
+import 'observers/observer.dart';
+import '../ui/notifier.dart';
+import '../injector.dart';
+import '../backend/backendHandler.dart';
+import 'observers/tempObserver.dart';
+import '../core/instrument.dart';
 class ObserverHandler{
     final Map<int,dynamic> observers = {};
     final notify = getIt<Notifier>().notify;
     late List<Instrument> options;
     bool isTempObserverRunning = false;
     ObserverHandler(){
-        getIt<EndPointHandler>().wsWrapper.stream.listen(listening);
-        options = getIt<EndPointHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime.now());
+        getIt<BackendHandler>().wsWrapper.stream.listen(listening);
+        options = getIt<BackendHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime.now());
     
     }
     void listening(Map<String,dynamic> event){
@@ -26,8 +26,8 @@ class ObserverHandler{
     addObserver(List<int> tokens) async{
         for(int x in tokens){
             observers[x] = Observer(x,notify,addOptionObserver);
-            observers[x].startSync(getIt<EndPointHandler>().getCandles);
-            getIt<EndPointHandler>().wsWrapper.subscribe(x);
+            observers[x].startSync(getIt<BackendHandler>().getCandles);
+            getIt<BackendHandler>().wsWrapper.subscribe(x);
         }
     }
     addOptionObserver(double ltp){
@@ -45,11 +45,11 @@ class ObserverHandler{
             return;
         }
         observers[instrument.token] = TempObserver(instrument,notify,removeTempObserver);
-        getIt<EndPointHandler>().wsWrapper.subscribe(instrument.token);
+        getIt<BackendHandler>().wsWrapper.subscribe(instrument.token);
         isTempObserverRunning = true;
     }
     removeTempObserver(int token){
-        getIt<EndPointHandler>().wsWrapper.unsubscribe(token);
+        getIt<BackendHandler>().wsWrapper.unsubscribe(token);
         observers[token] = null;
         isTempObserverRunning = false;
     }

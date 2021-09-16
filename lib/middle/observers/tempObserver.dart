@@ -1,4 +1,4 @@
-import '../../domain/instrument.dart';
+import '../../core/instrument.dart';
 class Order{
     final double entry;
     final DateTime entryTime;

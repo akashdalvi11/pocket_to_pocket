@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'ui_help.dart';
 import 'package:provider/provider.dart';
 
-import 'homeAdapter.dart';
+import '../uiAdapter.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeAdapter>(
+    return Consumer<UIAdapter>(
         builder: (context, model, child) => Scaffold(
               body: Center(
                   child: Column(

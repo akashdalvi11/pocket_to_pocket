@@ -1,8 +1,6 @@
-import 'dart:math';
 import '../candles/candle.dart';
 import 'observerSync.dart';
-import '../../domain/rawCandle.dart';
-import '../../domain/instrument.dart';
+import '../../core/rawCandle.dart';
 
 class Observer{
     final int token;
@@ -30,7 +28,7 @@ class Observer{
             }else{
                 print(latestCandle);
                 candles.add(latestCandle);
-                latestCandle = Candle.justFormed(dateTime,ltp,candles.last.EMA);
+                latestCandle = Candle.justFormed(dateTime,ltp,candles.last.ema);
                 checkEntry(ltp);
             }
         }else{
@@ -40,7 +38,7 @@ class Observer{
     checkMovingAverage(Candle c){
         var candleHeight = c.h - c.l;
         var upperLimit = c.l + (candleHeight/3);
-        return upperLimit > c.EMA;
+        return upperLimit > c.ema;
     }
     checkEntry(double ltp){
         if(isInMovingAverage){

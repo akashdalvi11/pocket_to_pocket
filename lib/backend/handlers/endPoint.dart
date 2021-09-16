@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:client_cookie/client_cookie.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
-import '../../errors.dart';
+import '../../core/errors.dart';
 
 class EndPoint {
   var _cookies = CookieStore();

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import '../middle/observerHandler.dart';
 import '../injector.dart';
-import '../infrastructure/observer/observerHandler.dart';
-import '../infrastructure/endPoint/endPointHandler.dart';
-import 'notifier.dart';
-class HomeAdapter extends ChangeNotifier {
+import '../backend/backendHandler.dart';
+class UIAdapter extends ChangeNotifier {
   var message = 'press it';
   String s = "";
   late ObserverHandler o;
+  initializeBackend(){
+    getIt<BackendHandler>().init();
+  }
   test() async{
     o = ObserverHandler();
     o.addObserver([260105]);

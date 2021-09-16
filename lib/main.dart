@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'ui/router.dart';
+import 'ui/pages/router.dart';
 import 'ui/notifier.dart';
 import 'injector.dart';
 import 'package:provider/provider.dart';
-import 'ui/homeAdapter.dart';
+import 'ui/uiAdapter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
@@ -15,7 +15,7 @@ class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers:[
-      ChangeNotifierProvider<HomeAdapter>(create:(context)=>HomeAdapter())
+      ChangeNotifierProvider<UIAdapter>(create:(context)=>getIt<UIAdapter>())
     ],child:
      MaterialApp(
         title: 'pocket to pocket',

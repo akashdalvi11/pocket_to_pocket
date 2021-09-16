@@ -1,7 +1,6 @@
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
-import '../../../domain/instrument.dart';
+import '../../../core/instrument.dart';
 class TokensHandler{
     final List<Instrument> instruments;
     TokensHandler(this.instruments);

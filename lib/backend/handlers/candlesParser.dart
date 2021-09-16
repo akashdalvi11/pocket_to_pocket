@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../../../domain/rawCandle.dart';
+import '../../../core/rawCandle.dart';
 class CandlesParser{
     static List<RawCandle> parse(String body){
         var decoded = jsonDecode(body);

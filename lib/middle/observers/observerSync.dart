@@ -1,5 +1,5 @@
 
-import '../../domain/rawCandle.dart';
+import '../../core/rawCandle.dart';
 import '../candles/candle.dart';
 import 'dart:math';
 class ObserverSync{
@@ -38,7 +38,7 @@ class ObserverSync{
             fetchingFailed = true;
         } else{
             var candles = Candle.createList(rawCandles);
-            setCandles(candles,Candle.fromRawAndPreviousEMA(latestCandle,candles.last.EMA));
+            setCandles(candles,Candle.fromRawAndPreviousEMA(latestCandle,candles.last.ema));
         }
     }
 }

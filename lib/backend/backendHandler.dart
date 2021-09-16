@@ -1,13 +1,12 @@
-import 'parsers/tokensHandler.dart';
-import 'parsers/wsWrapper.dart';
-import 'endPoint.dart';
-import 'parsers/candlesParser.dart';
-import '../../domain/rawCandle.dart';
-class EndPointHandler{
-    final EndPoint _endPoint;
+import 'handlers/tokensHandler.dart';
+import 'handlers/wsWrapper.dart';
+import 'handlers/endPoint.dart';
+import 'handlers/candlesParser.dart';
+import '../../core/rawCandle.dart';
+class BackendHandler{
+    final EndPoint _endPoint = EndPoint();
     late TokensHandler tokensHandler;
     late WSWrapper wsWrapper;
-    EndPointHandler(this._endPoint);
     Future<String?> init() async{
         var error = await _endPoint.login();
         if(error != null) return error;
