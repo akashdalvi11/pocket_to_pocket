@@ -7,7 +7,7 @@ class Observer{
     final void Function(String,String) notify;
     ObserverSync? observerSync;
     bool synchronized = false;
-    bool isInMovingAverage = false;
+    late bool isInMovingAverage;
     late List<Candle> candles;
     late Candle latestCandle;
     final void Function(double) addOptionObserver;
@@ -19,6 +19,7 @@ class Observer{
             this.latestCandle = latestCandle;
             synchronized = true;
             observerSync = null;
+            isInMovingAverage = checkMovingAverage(candles.last);
         });
     }
     ltpChanged(double ltp,DateTime dateTime,bool isCandleChanged){

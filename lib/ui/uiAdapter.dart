@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import '../middle/observerHandler.dart';
 import '../injector.dart';
 import '../backend/backendHandler.dart';
+import 'notifier.dart';
 class UIAdapter extends ChangeNotifier {
   var message = 'press it';
   String s = "";
+  bool testButtonEnabled = true;
   late ObserverHandler o;
-  initializeBackend(){
-    getIt<BackendHandler>().init();
+  initializeBackend() async{
+    await getIt<BackendHandler>().init();
+    getIt<Notifier>().notify("loaded","...");
   }
-  test() async{
+  test(){
     o = ObserverHandler();
     o.addObserver([260105]);
+    testButtonEnabled = false;
+    notify("started","...");
+    notifyListeners();
+    // var x = getIt<BackendHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime.utc(2021,09,16));
+    // print(x);
     // var list = getIt<EndPointHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime.now());
     // var ltp = 36633;
     //   for(var x in list){

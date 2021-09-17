@@ -9,7 +9,7 @@ class LoadingPage extends StatefulWidget {
 class _LoadingPageState extends State<LoadingPage> {
   String? failure;
   void loadRepo() async {
-	var result = await Provider.of<UIAdapter>(context).initializeBackend();
+	var result = await Provider.of<UIAdapter>(context,listen:false).initializeBackend();
     if(result == null){
         Navigator.pushReplacementNamed(context, 'home-page');
     }else{
@@ -21,8 +21,8 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   void initState() {
-    loadRepo();
     super.initState();
+    loadRepo();
   }
 
   @override

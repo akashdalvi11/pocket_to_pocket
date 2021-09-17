@@ -11,8 +11,7 @@ class ObserverHandler{
     bool isTempObserverRunning = false;
     ObserverHandler(){
         getIt<BackendHandler>().wsWrapper.stream.listen(listening);
-        options = getIt<BackendHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime.now());
-    
+        options = getIt<BackendHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime(2021,9,23));
     }
     void listening(Map<String,dynamic> event){
       var ltps = event['ltps'];
