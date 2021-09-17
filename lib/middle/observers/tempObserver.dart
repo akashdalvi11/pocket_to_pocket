@@ -29,7 +29,6 @@ class TempObserver{
         }
     }
     checkExit(double ltp){
-        print(order);
         if(ltp<=(order!.entry-30) || ltp>=(order!.entry+30)){
             order!.exitOrder(ltp);
             notify('exited'+instrument.name,order!.toString());

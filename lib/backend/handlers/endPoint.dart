@@ -50,7 +50,7 @@ class EndPoint {
         return right(responseWithBody);
       } else {
         var responseWithBody = await http.Response.fromStream(response);
-                print(responseWithBody.body);
+        print(responseWithBody.body);
         return left(Errors.sessionExpired);
       }
     } catch(e) {

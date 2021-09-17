@@ -17,7 +17,7 @@ class TokensHandler{
     List<Instrument> getOptionTokens(String name,DateTime expiry){
         var filtered = <Instrument>[];
         for(var x in instruments){
-            if(x.name.contains(name+'${expiry.year}${expiry.month}${expiry.day}')) filtered.add(x);
+            if(x.name.contains(name+'${expiry.year-2000}${expiry.month}${expiry.day}')) filtered.add(x);
         }
         return filtered;
     }

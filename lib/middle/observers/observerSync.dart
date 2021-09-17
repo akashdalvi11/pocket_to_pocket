@@ -33,7 +33,6 @@ class ObserverSync{
     }
     void loadCandles() async{
         var rawCandles = (await getCandles());
-        print(rawCandles);
         if(rawCandles==null){
             notify("failure","fetchingFailed");
             fetchingFailed = true;

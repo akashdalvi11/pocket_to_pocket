@@ -11,14 +11,11 @@ class ObserverHandler{
     bool isTempObserverRunning = false;
     ObserverHandler(){
         getIt<BackendHandler>().wsWrapper.stream.listen(listening);
-        options = getIt<BackendHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime(2021,9,23));
+        options = getIt<BackendHandler>().tokensHandler.getOptionTokens('BANKNIFTY',DateTime.utc(2021,9,23));
     }
     void listening(Map<String,dynamic> event){
       var ltps = event['ltps'];
-      print(event);
       for(int x in ltps.keys){
-          if(event['meta']['isChanged'])
-          print(event['meta']['isChanged']);
           observers[x]!.ltpChanged(ltps[x],event['meta']['date'],event['meta']['isChanged']);
       }
     }

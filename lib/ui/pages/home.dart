@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: 50),
                       child: Text(model.message)),
-                  ElevatedButton(onPressed: model.testButtonEnabled?model.test:null, child: Text('test'))
+                  ElevatedButton(onPressed:model.testButtonEnabled?(model.test):null, child: Text(model.testButtonEnabled?'test':'running'))
                 ],
               )),
             ));

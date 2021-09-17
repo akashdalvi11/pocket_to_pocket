@@ -20,6 +20,8 @@ class Observer{
             synchronized = true;
             observerSync = null;
             isInMovingAverage = checkMovingAverage(candles.last);
+            print('history Moving average');
+            print(isInMovingAverage);
         });
     }
     ltpChanged(double ltp,DateTime dateTime,bool isCandleChanged){
@@ -46,6 +48,7 @@ class Observer{
             if(!checkMovingAverage(candles.last)) isInMovingAverage = false;
         }else{
             if(checkMovingAverage(candles.last)){
+                notify("moving","Average");
                 addOptionObserver(ltp);
                 isInMovingAverage = true;
             }
