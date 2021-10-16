@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
-import '../middle/observerHandler.dart';
-import '../injector.dart';
-import '../backend/backendHandler.dart';
 import 'notifier.dart';
+import '../injector.dart';
+import '../core/instrument.dart';
+import '../core/dataTree/dataSpecForest.dart';
+import '../core/dataTree/dataSpecNode.dart';
+import '../middle/observerHandler.dart';
+import '../backend/backendHandler.dart';
 class UIAdapter extends ChangeNotifier {
-  var message = 'press it';
-  String s = "";
-  bool testButtonEnabled = true;
+  final Notifier _notifier = Notifier();
+  bool buttonEnabled = true;
   late ObserverHandler o;
-  initializeBackend() async{
+  initialiseNotifier() async{
+    await _notifier.setupNotifications();
+  } 
+  initializeBackendAndObserverHandler() async{
     await getIt<BackendHandler>().init();
-    getIt<Notifier>().notify("loaded","...");
-  }
-  test(){
     o = ObserverHandler();
-    o.addObserver([260105]);
-    testButtonEnabled = false;
-    getIt<Notifier>().notify("started","...");
+    _notifier.notify("loaded","...");
+  }
+  start() async{
+    o.addObserver((Instrument(260105,"NIFTYBANK"),[
+      DataSpecForest(5,[DataSpecNode<HeikenAshi>({},[DataSpecNode<EMA>({'period':21})])]);
+    ]);
+    buttonEnabled = false;
     notifyListeners();
-    
+  }
+  sendError(String error){
+    _notifier.notify(error);
   }
 }

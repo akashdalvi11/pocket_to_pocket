@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'ui/pages/router.dart';
-import 'ui/notifier.dart';
 import 'injector.dart';
 import 'package:provider/provider.dart';
 import 'ui/uiAdapter.dart';
+import 'package:catcher/catcher.dart';
+import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
-  await getIt<Notifier>().setupNotifications();
+  await Firebase.initializeApp();
+  await getIt<UIAdapter>().initialiseNotifier();
+  // var releaseConfig = CatcherOptions(PageReportMode(),[EmailManualHandler(["akashdalvi115@gmail.com"])]);
+  // Catcher(rootWidget:Root(),debugConfig:releaseConfig,releaseConfig:releaseConfig);
   runApp(Root());
 }
 
@@ -18,6 +22,7 @@ class Root extends StatelessWidget {
       ChangeNotifierProvider<UIAdapter>(create:(context)=>getIt<UIAdapter>())
     ],child:
      MaterialApp(
+       navigatorKey: Catcher.navigatorKey,
         title: 'pocket to pocket',
         onGenerateRoute: getRoutes,
         initialRoute: 'loading-page'));

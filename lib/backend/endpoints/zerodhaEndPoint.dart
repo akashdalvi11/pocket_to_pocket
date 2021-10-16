@@ -7,13 +7,17 @@ import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../core/errors.dart';
 
-class EndPoint {
+class ZerodhaEndPoint {
   var _cookies = CookieStore();
   String _userID = 'KF3482';
   String _password = 'callofart137';
   String _twoFA = '137505';
   String _host = 'kite.zerodha.com';
+  const Map<int,String> intervalMap = 
+    { 1:'minute',2:'2minute',3:'3minute',4:'4minute',5:'5minute',10:'10minute',
+    15:'15minute',30:'30minute',60:'60minute',120:'2hour',180:'3hour',360:'day'} 
   late String _enctoken;
+  late WSWrapper wsWrapper;
 
   static String? _directivesParser(String? setCookie) {
     if (setCookie == null)
@@ -82,16 +86,16 @@ class EndPoint {
       });
     });
   }
-  WebSocketChannel getWS(){
+  setWSChannel(){
     var uri = Uri(host: "ws.zerodha.com", scheme: 'wss', queryParameters: {
           'api_key': 'kitefront',
           'user_id': _userID,
           'enctoken': _enctoken
         });
-     return WebSocketChannel.connect(uri);
+    wsChannel = WebSocketChannel.connect(uri);
   }
 
-  Future<Either<Errors,dynamic>> getTokens() async{
+  Future<Either<Errors,dynamic>> getInstruments() async{
         var url = "https://api.kite.trade/instruments";
         final cacheFile = await DefaultCacheManager().getFileFromCache(url);
         var file;
@@ -113,15 +117,15 @@ class EndPoint {
     static String getDate(DateTime dateTime){
       return dateTime.toString().substring(0,10);
     }
-    Future<Either<Errors,String>> getCandles(int token) async {
+  Future<Either<Errors,String>> getHistoricalData(int token,int interval) async {
     var uri = Uri(
         host: _host,
         scheme: 'https',
-        path: 'oms/instruments/historical/$token/minute',
+        path: 'oms/instruments/historical/$token/${intervalMap![interval]}',
         queryParameters: {
-          'from': getDate(DateTime.now().subtract(Duration(days:5))),
+          'from': getDate(DateTime.now().subtract(Duration(days:interval*2))),
           'to': getDate(DateTime.now()),
-          'user_id': _userID
+          'user_id': _userID,
         });
      var chartResponse = await _makeRequest(uri,
         requestMethod: 'get',

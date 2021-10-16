@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "115072385118",
+    "project_id": "pocket-to-pocket",
+    "storage_bucket": "pocket-to-pocket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115072385118:android:cebdf340d4b08f75d274cf",
+        "android_client_info": {
+          "package_name": "io.github.boredkeyboards.pocket_to_pocket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115072385118-sa2b57mp31c494ugekfnknab59791evf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoBdrSjfwQdIwiD_jIVxugmZVZFSFvWFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115072385118-sa2b57mp31c494ugekfnknab59791evf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,10 +18,8 @@ class _HomeState extends State<Home> {
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                      padding: EdgeInsets.symmetric(vertical: 50),
-                      child: Text(model.message)),
-                  ElevatedButton(onPressed:model.testButtonEnabled?(model.test):null, child: Text(model.testButtonEnabled?'test':'running'))
+                  ElevatedButton(onPressed:model.testSignal,child:Text("send signal")),
+                  ElevatedButton(onPressed:model.buttonEnabled?(model.start):null, child: Text(model.buttonEnabled?'start':'running'))
                 ],
               )),
             ));
