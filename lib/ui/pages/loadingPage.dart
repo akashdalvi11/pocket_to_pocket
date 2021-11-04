@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../uiAdapter.dart';
 import 'package:provider/provider.dart';
+import '../uiAdapter.dart';
 class LoadingPage extends StatefulWidget {
   @override
   _LoadingPageState createState() => _LoadingPageState();

@@ -1,17 +1,9 @@
 import 'dart:async';
+// import 'dart:math';
 void main() async {
-    Map<String,int> a = {'a':5};
-    print('wer');
-    doSomething(a['a']);
+    var d = DateTime.parse('2021-11-02 09:30:00');
+    var e = DateTime.parse('2021-11-02 09:30:00');
+    print(d);
+    print(d==e);
+    print(DateTime.now());
 }
-int doSomething(int a){
-    return a;
-}
-// int doSomething(Type t){
-//     switch(t){
-//         case List:
-//             return 5;
-//         default:
-//             throw "error";
-//     }
-// }

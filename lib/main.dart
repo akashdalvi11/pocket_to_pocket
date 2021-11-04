@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'ui/pages/router.dart';
-import 'injector.dart';
-import 'package:provider/provider.dart';
-import 'ui/uiAdapter.dart';
 import 'package:catcher/catcher.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'injector.dart';
+import 'ui/uiAdapter.dart';
+import 'ui/pages/router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
@@ -22,7 +22,7 @@ class Root extends StatelessWidget {
       ChangeNotifierProvider<UIAdapter>(create:(context)=>getIt<UIAdapter>())
     ],child:
      MaterialApp(
-       navigatorKey: Catcher.navigatorKey,
+      //  navigatorKey: Catcher.navigatorKey,
         title: 'pocket to pocket',
         onGenerateRoute: getRoutes,
         initialRoute: 'loading-page'));

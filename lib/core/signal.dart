@@ -1,6 +1,11 @@
-class Signal{
-    final DateTime dateTime;
-    final SignalType signalType;
-    Signal(this.dateTime,this.signalType);
+import 'analyserInference.dart';
+class Signal {
+  final DateTime dateTime;
+  final AnalyserInference analyserInference;
+  final double value;
+  Signal(this.dateTime,this.analyserInference,this.value);
+  String toString(){
+    return '$dateTime : $analyserInference : $value';
+  }
 }
-enum SignalType{up,down,sideways};
+

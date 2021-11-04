@@ -1,17 +1,31 @@
-import 'observers/observer.dart';
 import '../injector.dart';
-import '../core/indicator/indicatorSpecForest.dart';
-import '../core/indicator/indicatorForest.dart';
-import '../backend/backendHandler.dart';
-import '../ui/UIAdapter.dart';
+import '../core/dataForest/dataSpecForest.dart';
+import '../core/instrument.dart';
+import '../core/signal.dart';
+import '../core/observerMeta.dart';
+import '../backend/backendAdapter.dart';
+import '../ui/uiAdapter.dart';
+import 'observer/observer.dart';
+import 'observer/historicalObserver.dart';
 class ObserverHandler{
-    Map<int,Observer> observers = {};
-    addObserver(Instrument i,List<IndicatorSpecForest> specs){
-        intervals = <int>[];
-        for(var x in specs) intervals.add(x.interval);
-        observers[i.token] = Observer(i,specs,getIt<BackendHandler>().getStream(i.token,intervals),(){
-                getIt<BackendHandler>().sendSignals(signals);
-                getIt<UIAdapter>().sendSignals(signals);
+    Map<ObserverMeta,Observer> observers = {};
+    addObserver(ObserverMeta m,DataSpecForest specs){
+        observers[m] = 
+            Observer(specs,getIt<BackendAdapter>().getStream(m.instrument.token,m.interval),(Signal s){
+                print(s);
+                getIt<BackendAdapter>().sendSignals(m,s);
+                getIt<UIAdapter>().sendSignals(m,s);
+            });
+    }
+    removeObserver(ObserverMeta m) async{
+        await getIt<BackendAdapter>().disposeStream(m.instrument.token,m.interval);
+        observers.remove(m);
+    }
+    addHistoricalObserver(ObserverMeta m,DataSpecForest specs){
+        HistoricalObserver(specs,()=>getIt<BackendAdapter>().getHistoricalData(m.instrument.token,m.interval),(List<Signal> signals){
+            for(var x in signals) print(x);
+        },(String s){
+            print(s);
         });
     }
 }

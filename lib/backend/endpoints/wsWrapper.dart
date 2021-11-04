@@ -1,17 +1,20 @@
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 class WSWrapper {
-  final WebSocketChannel ws;
-  WSWrapper(this.ws);
+  final WebSocketChannel _ws;
+  late Stream stream;
+  WSWrapper(this._ws){
+    stream = _ws.stream;
+  }
   subscribe(int token) {
-    ws.sink.add(jsonEncode({"a": "mode", "v": ["ltp",[token]]}));
+    _ws.sink.add(jsonEncode({"a": "mode", "v": ["ltp",[token]]}));
   }
 
   unsubscribe(int token) {
-    ws.sink.add(jsonEncode({"a": "unsubscribe", "v": [token]}));
+    _ws.sink.add(jsonEncode({"a": "unsubscribe", "v": [token]}));
   }
   close() {
-    ws.sink.close();
+    _ws.sink.close();
   }
 }
 

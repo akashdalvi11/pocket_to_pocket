@@ -1,42 +1,28 @@
 import 'dart:math';
-class HeikenAshi extends OHLC{
+import 'interfaceData/ohlc.dart';
+import 'data.dart';
+class HeikenAshi extends Data{
     final o,h,l,c;
-    HeikenAshi(OHLC ohlc,this.o,this.h,this.l,this.c): ohlc;
-    static List<HeikenAshi> fromOHLC(List<OHLC> list){
+    HeikenAshi(this.o,this.h,this.l,this.c);
+    static HeikenAshi getHeikenAshi(OHLC ohlc,[HeikenAshi? previousHeikenAshi]){
+        double close = Data.round((ohlc.o+ohlc.h+ohlc.l+ohlc.c)/4);
+        double open = Data.round((previousHeikenAshi == null?
+                    ohlc.o+ohlc.c:
+                    previousHeikenAshi.o + previousHeikenAshi.c)/2);
+        var high = max(ohlc.h,max(close,open));
+        var low = min(ohlc.l,min(close,open));
+        return HeikenAshi(open,high,low,close);
+    }    
+    static List<HeikenAshi> getHeikenAshiList(List<OHLC> list){
         var hlist = <HeikenAshi>[];
-        hlist.add(HeikenAshi(list[0],list[0].o,.....));
+        hlist.add(getHeikenAshi(list[0]));
         for(int i=1;i<list.length;i++){
-            var c = list[i];
-            var close = (c.o+c.h+c.l+c.c)/4
-            var open = (hlist[i-1].o + hlist[i-1].c)/2
-            var high = max(c.h,max(close,open))
-            var low = min(c.l,min(close,open))
-            hlist.add(HeikenAshi(list[i],open,close,high,low));
+            hlist.add(getHeikenAshi(list[i],hlist[i-1]));
         }
-        return l;
+        return hlist;
     }
     @override
-    HeikenAshi updated(double ltp){
-        var close = super.o+super.h+super.l+ltp)/4;
-        var high = max(this.o,max(this.h,close));
-        var low = min(this.o,min(this.l,close));
-        return HeikenAshi(super,this.o,high,low,close);
+    String toString(){
+        return '$o,$h,$l,$c';
     }
-}
-class HeikenAshiEMA extends HeikenAshi with EMA{
-    HeikenAshiEMA(HeikenAshi h):h;
-    static createList(List<OHLC> list){
-        var hList = super.createList(list);
-        var values = <double>[];
-        for(var x in hList) values.add(x.c);
-        var hEMAList = <HeikenAshiEMA>[];
-        for(var x in hList) hEMAList.add(HeikenAshiEMA(h));
-        EMAHelper.assignEMA(hEMAList,values,10);
-    }
-    @override updated(double ltp){
-        var new = HeikenAshiEMA(super.updated(ltp));
-        new.setUpdatedEMA(super.ema,ltp);
-        return new;
-    }
-    justFormed()
 }

@@ -1,3 +1,5 @@
 abstract class Data{
-    Data updated(double data);
+    static round(double x){
+        return (x*100).round()/100;
+    }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'ui_help.dart';
 import 'package:provider/provider.dart';
-
 import '../uiAdapter.dart';
+import 'ui_help.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -18,7 +18,15 @@ class _HomeState extends State<Home> {
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(onPressed:model.testSignal,child:Text("send signal")),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount:model.signals.length,
+                      itemBuilder: (BuildContext context,int index){
+                        return ListTile(title:Text(model.signals[index].toString()));
+                      }
+                    )
+                  ),
+                  ElevatedButton(onPressed:model.test,child:Text("send signal")),
                   ElevatedButton(onPressed:model.buttonEnabled?(model.start):null, child: Text(model.buttonEnabled?'start':'running'))
                 ],
               )),

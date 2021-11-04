@@ -1,21 +1,29 @@
-class EMAHelper{
-    static double calculateEMA(previousEMA,newValue,alpha){
-        if(previousEMA == 0) return 0.0;
-        return (previousEMA + alpha*(newValue - previousEMA));
+import 'data.dart';
+
+class EMA extends Data {
+  final double value;
+  EMA(this.value);
+  static EMA getEMA(EMA previousEMA,double newValue,int period) {
+    var alpha = 2 / (period + 1);
+    var toReturn = Data.round(previousEMA.value + alpha * (newValue - previousEMA.value));
+    return EMA(toReturn);
+  }
+
+  static List<EMA> getEMAList(List<double> values, int period) {
+    List<EMA> emas = [];
+    double sma = 0;
+    for(var i=0;i<period-1;i++){
+      sma+= values[i];
+      emas.add(EMA(0));
     }
-    static assignEMA(List<EMA> emaTimeFrames,List<double> values,double range){
-        alpha = 2/(range+1);
-        double sma = 0;
-        emaTimeFrames[0].ema = 0;
-        for(var i=1;i<values.length;i++){
-            if(i<range-1) sma += values[i];
-            emaTimeFrames[i].ema = i==9?sma/10:calculateEMA(emaTimeFrames[i-1].ema,values[i],alpha);
-        }
+    sma += values[period-1];
+    emas.add(EMA(Data.round(sma/period)));
+    for (var i = period; i < values.length; i++) {
+      emas.add(getEMA(emas[i - 1], values[i], period));
     }
-}
-mixin EMA {
-    late final double ema;
-    setUpdatedEMA(double alpha,double oldEMA,double oldValue,double newValue){
-        return oldEMA - alpha*(oldValue-newValue);
-    }
+    return emas;
+  }
+  String toString(){
+    return "$value";
+  }
 }

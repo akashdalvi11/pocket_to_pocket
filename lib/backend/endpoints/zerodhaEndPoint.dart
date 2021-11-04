@@ -6,6 +6,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../core/errors.dart';
+import 'wsWrapper.dart';
 
 class ZerodhaEndPoint {
   var _cookies = CookieStore();
@@ -13,9 +14,20 @@ class ZerodhaEndPoint {
   String _password = 'callofart137';
   String _twoFA = '137505';
   String _host = 'kite.zerodha.com';
-  const Map<int,String> intervalMap = 
-    { 1:'minute',2:'2minute',3:'3minute',4:'4minute',5:'5minute',10:'10minute',
-    15:'15minute',30:'30minute',60:'60minute',120:'2hour',180:'3hour',360:'day'} 
+  static const Map<int, String> intervalMap = {
+    1: 'minute',
+    2: '2minute',
+    3: '3minute',
+    4: '4minute',
+    5: '5minute',
+    10: '10minute',
+    15: '15minute',
+    30: '30minute',
+    60: '60minute',
+    120: '2hour',
+    180: '3hour',
+    360: 'day'
+  };
   late String _enctoken;
   late WSWrapper wsWrapper;
 
@@ -31,11 +43,12 @@ class ZerodhaEndPoint {
       return toReturn;
     }
   }
+
   Future<Either<Errors, http.Response>> _makeRequest(Uri uri,
       {String requestMethod = 'post',
       Map<String, String>? body,
       Map<String, String>? headersPar}) async {
-        print(uri);
+    print(uri);
     try {
       var r = http.Request(requestMethod, uri);
       if (requestMethod == 'post') {
@@ -46,7 +59,7 @@ class ZerodhaEndPoint {
               ? null
               : {'cookie': _cookies.toReqHeader});
       if (headers != null) r.headers.addAll(headers);
-         http.StreamedResponse response = await r.send();
+      http.StreamedResponse response = await r.send();
       if (response.statusCode == 200) {
         var responseWithBody = await http.Response.fromStream(response);
         _cookies.addFromHeader(
@@ -57,12 +70,11 @@ class ZerodhaEndPoint {
         print(responseWithBody.body);
         return left(Errors.sessionExpired);
       }
-    } catch(e) {
+    } catch (e) {
       print(e);
       return left(Errors.networkError);
     }
   }
-
 
   Future<String?> login() async {
     var loginResponse = await _makeRequest(
@@ -86,54 +98,64 @@ class ZerodhaEndPoint {
       });
     });
   }
-  setWSChannel(){
+
+  setWSChannel() {
     var uri = Uri(host: "ws.zerodha.com", scheme: 'wss', queryParameters: {
-          'api_key': 'kitefront',
-          'user_id': _userID,
-          'enctoken': _enctoken
-        });
-    wsChannel = WebSocketChannel.connect(uri);
+      'api_key': 'kitefront',
+      'user_id': _userID,
+      'enctoken': _enctoken
+    });
+    wsWrapper = WSWrapper(WebSocketChannel.connect(uri));
   }
 
-  Future<Either<Errors,dynamic>> getInstruments() async{
-        var url = "https://api.kite.trade/instruments";
-        final cacheFile = await DefaultCacheManager().getFileFromCache(url);
-        var file;
-        try{
-        if (cacheFile != null) {
-            if (cacheFile.validTill.isBefore(DateTime.now())) {
-            var fileInfo = await DefaultCacheManager().downloadFile(url, key: url, authHeaders: {'authorization': 'enctoken ' + _enctoken});
-                file =  fileInfo.file;
-            }
-            file = cacheFile.file;
+  Future<Either<Errors, dynamic>> getInstruments() async {
+    var url = "https://api.kite.trade/instruments";
+    final cacheFile = await DefaultCacheManager().getFileFromCache(url);
+    var file;
+    try {
+      if (cacheFile != null) {
+        if (cacheFile.validTill.isBefore(DateTime.now())) {
+          var fileInfo = await DefaultCacheManager().downloadFile(url,
+              key: url,
+              authHeaders: {'authorization': 'enctoken ' + _enctoken});
+          file = fileInfo.file;
         }
-        file = (await DefaultCacheManager().downloadFile(url, key: url, authHeaders: {'authorization': 'enctoken ' + _enctoken})).file;
-        return right(file);
-        } catch(_){
-          print(_);
-          return left(Errors.networkError);
-        }
+        file = cacheFile.file;
+      }
+      file = (await DefaultCacheManager().downloadFile(url,
+              key: url,
+              authHeaders: {'authorization': 'enctoken ' + _enctoken}))
+          .file;
+      return right(file);
+    } catch (_) {
+      print(_);
+      return left(Errors.networkError);
     }
-    static String getDate(DateTime dateTime){
-      return dateTime.toString().substring(0,10);
-    }
-  Future<Either<Errors,String>> getHistoricalData(int token,int interval) async {
+  }
+
+  static String getDate(DateTime dateTime) {
+    return dateTime.toString().substring(0, 10);
+  }
+
+  Future<Either<Errors, String>> getHistoricalData(
+      int token, int interval,DateTime from, DateTime to) async {
     var uri = Uri(
         host: _host,
         scheme: 'https',
-        path: 'oms/instruments/historical/$token/${intervalMap![interval]}',
+        path: 'oms/instruments/historical/$token/${intervalMap[interval]}',
         queryParameters: {
-          'from': getDate(DateTime.now().subtract(Duration(days:interval*2))),
-          'to': getDate(DateTime.now()),
+          'from':getDate(from),
+          'to': getDate(to),
           'user_id': _userID,
         });
-     var chartResponse = await _makeRequest(uri,
+    var chartResponse = await _makeRequest(uri,
         requestMethod: 'get',
         headersPar: {'authorization': 'enctoken ' + _enctoken});
-    return chartResponse.fold((l)=>left(l),(r)=>right(r.body));
+    return chartResponse.fold((l) => left(l), (r) => right(r.body));
   }
-  test() async{
-    // var data = (await getC(260105)).fold((l)=>l.toString(),(r)=>r.body); 
+
+  test() async {
+    // var data = (await getC(260105)).fold((l)=>l.toString(),(r)=>r.body);
     // OldDataParser.parse(data);
     //var observer = AssetObserver.create(260105,data,(String s){    });
   }

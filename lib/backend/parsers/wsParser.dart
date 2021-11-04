@@ -1,20 +1,23 @@
+import 'dart:typed_data';
+import 'dart:math';
 
 class WSParser {
-  int segmentNseCD = 3;
-  int segmentBseCD = 6;
-  static bool isParsable(l){
-    if(l is Uint8List) return l.length != 1;
+  static const int segmentNseCD = 3;
+  static const int segmentBseCD = 6;
+  static bool isParsable(l) {
+    if (l is Uint8List) return l.length != 1;
     print(l);
     print("not parsable wrong wrong wrong");
     return false;
   }
+
   static int _buf2long(Uint8List t) {
     var s = 0;
     var i = t.length;
     for (var n = 0, r = i - 1; n < i; n++, r--) s += t[r] << 8 * n;
     return s;
   }
-  
+
   static List<Uint8List> _splitPackets(Uint8List e) {
     var t = _buf2long(e.sublist(0, 2));
     var s = 2;
@@ -48,23 +51,27 @@ class WSParser {
       'openChangePercent': n
     };
   }
-  static Map<int,dynamic> parsingDesired(List<Map<String,dynamic>> list){
-    var map = <int,dynamic>{};
-    for(var x in list){
-      map[x['token']] = {'data':{'ltp':x['lastPrice']}}; 
+
+  static Map<int, Map<String,dynamic>> _parsingDesired(List<Map<String, dynamic>> list) {
+    var tokenSeperated = <int, Map<String,dynamic>>{};
+    for (var x in list) {
+      tokenSeperated[x['token']] = {
+        'data': <String,dynamic>{'ltp': x['lastPrice']}
+      };
     }
-    return map;
+    return tokenSeperated;
   }
+
   static Map<int, dynamic> parseBinary(Uint8List e) {
-    var t = this._splitPackets(e);
+    var t = _splitPackets(e);
     List<Map<String, dynamic>> s = [];
     for (var i in t) {
       Map<String, dynamic> e;
       var t = _buf2long(i.sublist(0, 4));
       var n = 255 & t, r = 100;
-      if (n == this.segmentNseCD)
+      if (n == segmentNseCD)
         r = pow(10, 7).toInt();
-      else if (n == this.segmentBseCD) r = pow(10, 4).toInt();
+      else if (n == segmentBseCD) r = pow(10, 4).toInt();
       if (8 == i.lengthInBytes) {
         s.add({
           'mode': 'ltp',
@@ -156,7 +163,6 @@ class WSParser {
         s.add(e);
       }
     }
-    return parsingDesired(s);
+    return _parsingDesired(s);
   }
-  
 }

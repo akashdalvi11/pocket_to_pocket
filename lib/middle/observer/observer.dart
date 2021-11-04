@@ -1,31 +1,32 @@
-import '../../core/indicator/indicatorForest.dart';
-import '../../core/indicator/indicatorSpecForest.dart';
+import 'dart:async';
+import '../../core/dataForest/dataSpecForest.dart';
+import '../../core/dataForest/dataForest.dart';
+import '../../core/dataForest/dataForestCreator.dart';
 import '../../core/signal.dart';
-import 'analyser.dart';
+import '../../core/analyser.dart';
 class Observer{
-    final Instrument instrument;
-    final Map<int,DataSpecForest> dataSpecForests;
+    final DataSpecForest dataSpecForest;
     final Stream<Map<String,dynamic>> inputStream;
-    final Function(Map<int,Signal>) signalCallback;
-    Map<int,DataForest> dataForests = {};
-    Observer(this.instrument,this.dataSpecForests,this.inputStream,this.signalCallback){
+    final Function(Signal) signalCallback;
+    DataForest? dataForest;
+    final Analyser analyser = Analyser();
+    Observer(this.dataSpecForest,this.inputStream,this.signalCallback){
         startListening();
     }
     startListening(){
         inputStream.listen((Map<String,dynamic> event){
             if(event['historical']){
-                for(var x in event['data'].keys){
-                    dataForests[x] = createForest(dataSpecForests[x]!,event['data'][x]);
-                }
+                    dataForest = DataForestCreator.createDataForest(dataSpecForest,event['data']);
+                    checkSignal();
             }else{
-                Map<int,Signal> signal = [];
-                for(var x in event['data'].keys){
-                    dataForests[x]!.update(event['data'][x]);
-                    Signal? signal = tempAnalyser(dataForests[x]!);
-                    if(signal!=null) signals[x] = (signal);
+                if(dataForest!.update(event['data'])){
+                    checkSignal();
                 }
-                if(signals.keys.length != 0) sendSignals(signals);
             }
-        })
+        });
+    }
+    checkSignal(){
+        Signal? signal = analyser.update(dataForest!);
+        if(signal!= null) signalCallback(signal);
     }
 }
