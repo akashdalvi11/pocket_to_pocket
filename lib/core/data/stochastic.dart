@@ -12,6 +12,7 @@ class Stochastic extends Data {
       if(ohlcs[i].l<lowest) lowest = ohlcs[i].l;
     }
     double close = ohlcs.last.c;
+    if(highest == lowest) return Stochastic(100);
     return Stochastic(
       Data.round(
         (close-lowest)*100/
