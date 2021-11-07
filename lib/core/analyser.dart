@@ -65,21 +65,31 @@ class Analyser{
 		print(analyserInference);
 	}
 	Signal? update(DataForest f){
-		var dateTime = f.list.last;
 		var ltp = (f.trees[0].list.last as OHLC).c;
 		var hl = f.trees[0].children[0].list.cast<HeikenAshi>();
 		var el = f.trees[0].children[0].children[0].list.cast<EMA>();
+		var stl = f.trees[0].children[0].children[1].list.cast<Stochastic>();
 		var kl = f.trees[0].children[0].children[1].children[0].list.cast<SMA>();
 		var dl = f.trees[0].children[0].children[1].children[0].children[0].list.cast<SMA>();
 		var sl = f.list.length -2;
+		var dateTime = f.list[sl];
+		// for(int i=0;i<f.list.length;i++){
+		// 	var h = hl[i];
+		// 	var e = el[i];
+		// 	var pK = kl[i];
+		// 	var pD = dl[i];
+		// 	var st = stl[i];
+		// 	print("${f.list[i]} $h $e $st $pK $pD");
+		// }	
 		if(!isInitialised){
 			return _initialise(hl,el,kl,dl,dateTime,ltp);
 		}
 		var h = hl[sl];
 		var e = el[sl];
+		var st = stl[sl];
 		var pK = kl[sl];
 		var pD = dl[sl];
-		print("$dateTime $h $e $pK $pD");	
+		print("$dateTime $h $e $st $pK $pD");
 		if(analyserInference != AnalyserInference.sideways){
 			if(!_isStateSimilar(h,e,analyserInference == AnalyserInference.up?1:-1)){
 				analyserInference = _checkInference(h,e,pK,pD)??AnalyserInference.sideways;
