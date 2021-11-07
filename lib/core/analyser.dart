@@ -51,6 +51,7 @@ class Analyser{
 		var sl = hl.length-2;
 		var h = hl[sl];
 		var e = el[sl];
+		print("$dateTime $h $e");
 		var inferedState = h.c > e.value?1:-1;
 		var i = _checkInference(h,e,kl[sl],dl[sl]);
 		var b =_checkInferenceBackWords(inferedState,hl,el,kl,dl,sl-1);
@@ -61,6 +62,7 @@ class Analyser{
 			if(b != null) analyserInference = b;
 			else analyserInference = AnalyserInference.sideways;
 		}
+		print(analyserInference);
 	}
 	Signal? update(DataForest f){
 		var dateTime = f.list.last;
@@ -76,7 +78,8 @@ class Analyser{
 		var h = hl[sl];
 		var e = el[sl];
 		var pK = kl[sl];
-		var pD = dl[sl];		
+		var pD = dl[sl];
+		print("$dateTime $h $e $pK $pD");	
 		if(analyserInference != AnalyserInference.sideways){
 			if(!_isStateSimilar(h,e,analyserInference == AnalyserInference.up?1:-1)){
 				analyserInference = _checkInference(h,e,pK,pD)??AnalyserInference.sideways;

@@ -57,7 +57,7 @@ class BackendAdapter {
   }
 
   Future<List<dynamic>?> getHistoricalData(int token, int interval) async {
-    return (await _zerodhaEndPoint.getHistoricalData(token, interval,DateTime.parse('2021-10-28'),DateTime.now()))
+    return (await _zerodhaEndPoint.getHistoricalData(token, interval,DateTime.parse('2021-11-01'),DateTime.now()))
         .fold((l) => null, (r) {
       var parsed =  HistoricalDataParser.parse(r);
       return parsed;
