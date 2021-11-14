@@ -6,7 +6,6 @@ class WSParser {
   static const int segmentBseCD = 6;
   static bool isParsable(l) {
     if (l is Uint8List) return l.length != 1;
-    print(l);
     print("not parsable wrong wrong wrong");
     return false;
   }

@@ -13,4 +13,10 @@ class DataForest{
             return true;
         }
     }
+    String toString(){
+        var sl = list.length -2;
+        var s = '${list[sl]}\n';
+        for(var x in trees) s+= '$x\n';
+        return s;
+    }
 }

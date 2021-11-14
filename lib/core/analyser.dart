@@ -72,7 +72,7 @@ class Analyser{
 		var kl = f.trees[0].children[0].children[1].children[0].list.cast<SMA>();
 		var dl = f.trees[0].children[0].children[1].children[0].children[0].list.cast<SMA>();
 		var sl = f.list.length -2;
-		var dateTime = f.list[sl];
+		var dateTime = f.list.last;
 		// for(int i=0;i<f.list.length;i++){
 		// 	var h = hl[i];
 		// 	var e = el[i];

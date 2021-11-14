@@ -69,4 +69,7 @@ class IntervalStream{
     Future<void> close() async{
         await streamController.close();
     }
+    String toString(){
+        return "intervalStream $interval";
+    }
 }

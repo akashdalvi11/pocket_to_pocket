@@ -1,8 +1,9 @@
 import 'dart:async';
 import '../core/instrument.dart';
 import '../core/signal.dart';
-import '../core/observerMeta.dart';
+import '../core/observerMeta/observerMeta.dart';
 import '../injector.dart';
+import '../middle/globals.dart';
 import '../ui/uiAdapter.dart';
 import 'endpoints/zerodhaEndPoint.dart';
 import 'endpoints/FirebaseEndpoint.dart';
@@ -10,7 +11,6 @@ import 'parsers/instrumentParser.dart';
 import 'parsers/historicalDataParser.dart';
 import 'parsers/wsParser.dart';
 import 'intervalStream.dart';
-
 class BackendAdapter {
   final ZerodhaEndPoint _zerodhaEndPoint = ZerodhaEndPoint();
   final FirebaseEndpoint _firebaseEndpoint = FirebaseEndpoint();
@@ -57,7 +57,8 @@ class BackendAdapter {
   }
 
   Future<List<dynamic>?> getHistoricalData(int token, int interval) async {
-    return (await _zerodhaEndPoint.getHistoricalData(token, interval,DateTime.parse('2021-11-01'),DateTime.now()))
+    var fromDate = getIt<Globals>().historicalBufferStart;
+    return (await _zerodhaEndPoint.getHistoricalData(token, interval,fromDate,DateTime.now()))
         .fold((l) => null, (r) {
       var parsed =  HistoricalDataParser.parse(r);
       return parsed;
@@ -66,18 +67,20 @@ class BackendAdapter {
   
   Stream<Map<String, dynamic>> getStream(
       int token, int interval) {
-    var sc = StreamController<Map<String, dynamic>>();
     var intervalStream = IntervalStream(interval, () => getHistoricalData(token, interval));
     if(!streams.containsKey(token)){
       _zerodhaEndPoint.wsWrapper.subscribe(token);
       streams[token] = {};
     }
     streams[token]![interval] = intervalStream;
+    print(streams);
     return intervalStream.streamController.stream;
   }
   Future<void> disposeStream(int token,int interval) async{
-    if(streams[token]!.keys.length == 0) _zerodhaEndPoint.wsWrapper.unsubscribe(token);
-    await streams[token]![interval]!.close();
-    streams[token]!.remove(interval);
+    if(streams[token]!.keys.length == 1){
+      _zerodhaEndPoint.wsWrapper.unsubscribe(token);
+      streams.remove(token);
+    }else streams[token]!.remove(interval);
+    print(streams);
   }
 }

@@ -25,4 +25,10 @@ class InterfaceNode<D extends InterfaceData>{
         for(var x in children)
             x.addNew(list);
     }
+    String toString(){
+        var sl = list.length -2;
+        var s = '${list[sl]}\n';
+        for(var x in children) s+= '$x\n';
+        return s;
+    }
 }

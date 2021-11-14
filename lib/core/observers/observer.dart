@@ -1,9 +1,9 @@
 import 'dart:async';
-import '../../core/dataForest/dataSpecForest.dart';
-import '../../core/dataForest/dataForest.dart';
-import '../../core/dataForest/dataForestCreator.dart';
-import '../../core/signal.dart';
-import '../../core/analyser.dart';
+import '../dataForest/dataSpecForest.dart';
+import '../dataForest/dataForest.dart';
+import '../dataForest/dataForestCreator.dart';
+import '../signal.dart';
+import '../analyser.dart';
 class Observer{
     final DataSpecForest dataSpecForest;
     final Stream<Map<String,dynamic>> inputStream;

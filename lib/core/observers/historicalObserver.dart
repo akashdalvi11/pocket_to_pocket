@@ -1,25 +1,26 @@
 import 'dart:async';
-import '../../core/dataForest/dataSpecForest.dart';
-import '../../core/signal.dart';
-import '../../core/data/interfaceData/ohlc.dart';
+import '../dataForest/dataSpecForest.dart';
+import '../signal.dart';
+import '../data/interfaceData/ohlc.dart';
 import 'observer.dart';
 class HistoricalObserver{
     final DataSpecForest specs;
+    final DateTime start;
     final Future<List<dynamic>?> Function() getHistoricalData;
     final void Function(List<Signal>) signalCallback;
     final void Function(String s) errorCallback;
-    HistoricalObserver(this.specs,this.getHistoricalData,this.signalCallback,this.errorCallback){
+    HistoricalObserver(this.specs,this.start,this.getHistoricalData,this.signalCallback,this.errorCallback){
         getData();
     }
     startTheStream(List<dynamic> data) async{
         var s = StreamController<Map<String,dynamic>>();
         var signals = <Signal>[];
         Observer(specs,s.stream,(Signal signal){
-                    signals.add(signal);
-            });
+            signals.add(signal);
+        });
         int splitIndex = 0;
         for(int i=0;i<data[0].length;i++){
-            if(data[0][i] == DateTime.parse('2021-11-02 09:30:00')){
+            if(data[0][i] == start){
                 splitIndex = i;
             }
         }

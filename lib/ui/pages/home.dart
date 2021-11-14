@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../uiAdapter.dart';
+import 'operations.dart';
 import 'ui_help.dart';
 
 
@@ -12,24 +13,43 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<UIAdapter>(
-        builder: (context, model, child) => Scaffold(
-              body: Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount:model.signals.length,
-                      itemBuilder: (BuildContext context,int index){
-                        return ListTile(title:Text(model.signals[index].toString()));
-                      }
-                    )
-                  ),
-                  ElevatedButton(onPressed:model.test,child:Text("send signal")),
-                  ElevatedButton(onPressed:model.buttonEnabled?(model.start):null, child: Text(model.buttonEnabled?'start':'running'))
-                ],
-              )),
-            ));
+    return Scaffold(
+      appBar:AppBar(title:Text('Open the drawer')),
+      drawer: Operations(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Consumer<UIAdapter>(
+                builder: (context, model, _) => 
+                ListView.builder(
+                  itemCount:model.signals.keys.length,
+                  itemBuilder: (BuildContext context,int index){
+                    var om = model.signals.keys.toList()[index];
+                    var signals = model.signals[om]!;
+                    return ExpansionTile(
+                      title:Text('$om'),
+                      children:[
+                        ListView.builder(
+                          shrinkWrap:true,
+                          physics:ClampingScrollPhysics(),
+                          itemCount:signals.length,
+                          itemBuilder: (BuildContext context,int index){
+                            return ListTile(
+                              title:Text('${signals[index]}')
+                              );
+                          }
+                        )
+                      ]
+                    );
+                  }
+                )
+              )
+            )
+          ]
+        )
+      )
+    );
   }
 }
