@@ -155,8 +155,6 @@ class ZerodhaEndPoint {
   }
 
   test() async {
-    // var data = (await getC(260105)).fold((l)=>l.toString(),(r)=>r.body);
-    // OldDataParser.parse(data);
-    //var observer = AssetObserver.create(260105,data,(String s){    });
+    
   }
 }

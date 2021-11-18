@@ -1,22 +1,26 @@
 import 'dart:async';
 import '../dataForest/dataSpecForest.dart';
-import '../signal.dart';
 import '../data/interfaceData/ohlc.dart';
-import 'observer.dart';
-class HistoricalObserver{
+import '../trade.dart';
+import '../instrument.dart';
+import 'trader.dart';
+class HistoricalTrader{
+    final Instrument instrument;
     final DataSpecForest specs;
     final DateTime start;
     final Future<List<dynamic>?> Function() getHistoricalData;
-    final void Function(List<Signal>) signalCallback;
+    final void Function(List<Trade>) tradesCallback;
     final void Function(String s) errorCallback;
-    HistoricalObserver(this.specs,this.start,this.getHistoricalData,this.signalCallback,this.errorCallback){
+    HistoricalTrader(this.instrument,this.specs,this.start,this.getHistoricalData,this.tradesCallback,this.errorCallback){
         getData();
     }
     startTheStream(List<dynamic> data) async{
         var s = StreamController<Map<String,dynamic>>();
-        var signals = <Signal>[];
-        Observer(specs,s.stream,(Signal signal){
-            signals.add(signal);
+        var trades = <Trade>[]; 
+        var trader = Trader(specs,s.stream,trades,(entry){
+            trades.add(Trade(instrument,entry));
+        },(exit){
+            trades.last.addExit(exit);
         });
         int splitIndex = 0;
         for(int i=0;i<data[0].length;i++){
@@ -37,7 +41,7 @@ class HistoricalObserver{
             s.add(getMap(dateTime,ohlc.c));
         }
         await s.close();
-        signalCallback(signals);
+        tradesCallback(trades);
     }
     static getMap(DateTime dateTime,double ltp){
         return <String,dynamic>{'historical':false,'data':{'dateTime':dateTime,'ltp':ltp}};

@@ -35,13 +35,13 @@ class Operations extends StatelessWidget{
                             },
                             child:Text('pick historical entry')
                         ),
-                        ElevatedButton(onPressed:model.bankNiftyAdded?null:(model.addObserver), 
+                        ElevatedButton(onPressed:model.bankNiftyAdded?null:(model.addTrader), 
                             child: Text(model.bankNiftyAdded?'running':'start normal')
                         ),
-                        ElevatedButton(onPressed:model.bankNiftyAdded?(model.removeObserver):null, 
+                        ElevatedButton(onPressed:model.bankNiftyAdded?(model.removeTrader):null, 
                             child: Text(model.bankNiftyAdded?'stop normal':'notstarted')
                         ),
-                        ElevatedButton(onPressed:model.addHistoricalObserver, 
+                        ElevatedButton(onPressed:model.addHistoricalTrader, 
                             child: Text('historical')
                         ),
                         ElevatedButton(onPressed:model.test, 

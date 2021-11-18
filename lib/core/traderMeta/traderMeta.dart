@@ -1,14 +1,14 @@
 import '../instrument.dart';
-class ObserverMeta{
+class TraderMeta{
 	final Instrument instrument;
 	final int interval;
-	ObserverMeta(this.instrument,this.interval);
+	TraderMeta(this.instrument,this.interval);
 	String toString(){
 		return '$instrument $interval';
 	}
 	@override
 	bool operator==(o){
-		if(o is ObserverMeta) 
+		if(o is TraderMeta) 
 			return o.instrument == instrument 
 			&& o.interval == interval;
 		return false;

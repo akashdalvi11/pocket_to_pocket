@@ -1,15 +1,15 @@
-import 'observerMeta.dart';
+import 'traderMeta.dart';
 import '../instrument.dart';
 
-class HistoricalObserverMeta extends ObserverMeta{
+class HistoricalTraderMeta extends TraderMeta{
 	final DateTime from;
-	HistoricalObserverMeta(Instrument i,int interval,this.from):super(i,interval);
+	HistoricalTraderMeta(Instrument i,int interval,this.from):super(i,interval);
 	String toString(){
 		return 'historical - ${super.toString()} - $from';
 	}
 	@override
 	bool operator==(o){
-		if(o is HistoricalObserverMeta) 
+		if(o is HistoricalTraderMeta) 
 			return o.instrument == super.instrument 
 			&& o.interval == super.interval 
 			&& o.from == from;

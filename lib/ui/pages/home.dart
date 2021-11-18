@@ -24,20 +24,20 @@ class _HomeState extends State<Home> {
               child: Consumer<UIAdapter>(
                 builder: (context, model, _) => 
                 ListView.builder(
-                  itemCount:model.signals.keys.length,
+                  itemCount:model.trades.keys.length,
                   itemBuilder: (BuildContext context,int index){
-                    var om = model.signals.keys.toList()[index];
-                    var signals = model.signals[om]!;
+                    var om = model.trades.keys.toList()[index];
+                    var trades = model.trades[om]!;
                     return ExpansionTile(
                       title:Text('$om'),
                       children:[
                         ListView.builder(
                           shrinkWrap:true,
                           physics:ClampingScrollPhysics(),
-                          itemCount:signals.length,
+                          itemCount:trades.length,
                           itemBuilder: (BuildContext context,int index){
                             return ListTile(
-                              title:Text('${signals[index]}')
+                              title:Text('${trades[index]}')
                               );
                           }
                         )

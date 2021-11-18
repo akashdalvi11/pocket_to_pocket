@@ -4,8 +4,7 @@ import 'data/sma.dart';
 import 'data/stochastic.dart';
 import 'data/heikenAshi.dart';
 import 'dataForest/dataForest.dart';
-import 'signal.dart';
-import 'analyserInference.dart';
+enum AnalyserInference {up,down,sideways}
 class Analyser{
 	late AnalyserInference analyserInference;
 	bool isInitialised = false;
@@ -46,7 +45,7 @@ class Analyser{
 			}else return null;
 		}
 	}
-	Signal? _initialise(List<HeikenAshi> hl,List<EMA> el,List<SMA> kl,List<SMA> dl,DateTime dateTime,double ltp){
+	AnalyserInference? _initialise(List<HeikenAshi> hl,List<EMA> el,List<SMA> kl,List<SMA> dl,DateTime dateTime,double ltp){
 		isInitialised = true;
 		var sl = hl.length-2;
 		var h = hl[sl];
@@ -57,14 +56,14 @@ class Analyser{
 		var b =_checkInferenceBackWords(inferedState,hl,el,kl,dl,sl-1);
 		if(i != null){
 			analyserInference = i;
-			if(b == null) return Signal(dateTime,i,ltp);
+			if(b == null) return i;
 		}else{
 			if(b != null) analyserInference = b;
 			else analyserInference = AnalyserInference.sideways;
 		}
 		print(analyserInference);
 	}
-	Signal? update(DataForest f){
+	AnalyserInference? update(DataForest f){
 		var ltp = (f.trees[0].list.last as OHLC).c;
 		var hl = f.trees[0].children[0].list.cast<HeikenAshi>();
 		var el = f.trees[0].children[0].children[0].list.cast<EMA>();
@@ -93,13 +92,13 @@ class Analyser{
 		if(analyserInference != AnalyserInference.sideways){
 			if(!_isStateSimilar(h,e,analyserInference == AnalyserInference.up?1:-1)){
 				analyserInference = _checkInference(h,e,pK,pD)??AnalyserInference.sideways;
-				return Signal(dateTime,analyserInference,ltp);
+				return analyserInference;
 			}
 		}else{
 			var i = _checkInference(h,e,pK,pD); 
 			if(i!=null){
 				analyserInference = i;
-				return Signal(dateTime,analyserInference,ltp);
+				return analyserInference;
 			}
 		}
 		
